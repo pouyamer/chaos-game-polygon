@@ -12,7 +12,8 @@ const config = {
     rotationAngle_radian: Math.PI / 2,
     // a perfect poligon is drawn within a circle,
     // The wider the circle, bigger the sides
-    circleContainingPoligonPointsRadius: 400
+    circleContainingPoligonPointsRadius:
+      (0.8 * Math.min(innerHeight, innerWidth)) / 2
   },
   points: {
     radius: 1,
