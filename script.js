@@ -1,5 +1,3 @@
-const TWO_THIRDS = 2 / 3
-
 // setting up the canvas
 const canvas = document.querySelector(".canvas")
 const ctx = canvas.getContext("2d")
@@ -50,27 +48,29 @@ let currentPolygonPointIndex = Math.floor(
 )
 let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   poligonPoints[currentPolygonPointIndex],
-  TWO_THIRDS
+  config.ratioFactor
 )
 
 const drawTheChaosGame = () => {
-  // get all unselected possible points on polygon
-  const poligonPointsExceptTheCurrentPoint = poligonPoints.filter(
-    (_, i) => i !== currentPolygonPointIndex
-  )
+  for (let i = 0; i < config.pointsDrawnPerFrame; i++) {
+    // get all unselected possible points on polygon
+    const poligonPointsExceptTheCurrentPoint = poligonPoints.filter(
+      (_, i) => i !== currentPolygonPointIndex
+    )
 
-  currentPolygonPointIndex =
-    poligonPointsExceptTheCurrentPoint[
-      Math.floor(Math.random() * poligonPointsExceptTheCurrentPoint.length)
-    ]
+    currentPolygonPointIndex =
+      poligonPointsExceptTheCurrentPoint[
+        Math.floor(Math.random() * poligonPointsExceptTheCurrentPoint.length)
+      ]
 
-  currentPoint = currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
-    currentPolygonPointIndex,
-    TWO_THIRDS
-  )
+    currentPoint =
+      currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
+        currentPolygonPointIndex,
+        config.ratioFactor
+      )
 
-  currentPoint.draw(ctx)
-
+    currentPoint.draw(ctx)
+  }
   requestAnimationFrame(drawTheChaosGame)
 }
 
@@ -89,7 +89,8 @@ poligonPoints.forEach((point, i) => {
   )
 
   //         points:
-  poligonPoints.forEach(point => point.draw(ctx))
+  config.poligon.showTrianglePoints &&
+    poligonPoints.forEach(point => point.draw(ctx))
 })
 currentPoint.draw(ctx)
 drawTheChaosGame()
