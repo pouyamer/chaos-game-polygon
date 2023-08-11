@@ -17,9 +17,7 @@ const config = {
       (0.8 * Math.min(innerHeight, innerWidth)) / 2
   },
   points: {
-    radius: 1,
-    fillColor: "#eee",
-    strokeColor: "black"
+    radius: 1
   },
   // pointsDrawnPerFrame: the higher it goes, more resourses it'll consume
   pointsDrawnPerFrame: 120,
