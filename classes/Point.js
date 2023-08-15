@@ -9,7 +9,7 @@ class Point {
     this.color = color
   }
   draw = (ctx, color = this.color) => {
-    ctx.fillStyle = color
+    ctx.fillStyle = color.toString()
     ctx.beginPath()
     ctx.arc(this.cX, this.cY, config.points.radius, 0, 2 * Math.PI)
     ctx.fill()
@@ -25,13 +25,45 @@ class Point {
   getNewPointFromFractionOfDistanceBetweenTwoPoints = (
     nextPoint,
     fraction,
-    isCalculatedFromTheFirstPoint = true
+    isCalculatedFromTheFirstPoint = true,
+    coloringMode
   ) => {
     const firstPoint = isCalculatedFromTheFirstPoint ? this : nextPoint
     const secondPoint = isCalculatedFromTheFirstPoint ? nextPoint : this
 
     const newX = firstPoint.x + fraction * (secondPoint.x - firstPoint.x)
     const newY = firstPoint.y + fraction * (secondPoint.y - firstPoint.y)
-    return new Point(newX, newY, secondPoint.color)
+
+    console.log(coloringMode)
+
+    const newHueBasedOnColoringMode = () => {
+      switch (coloringMode) {
+        case "firstPoint":
+          return firstPoint.color.hue
+        case "secondPoint":
+          return secondPoint.color.hue
+        case "takeAverage":
+          return (secondPoint.color.hue + firstPoint.color.hue) / 2
+        case "addHues":
+          return (secondPoint.color.hue + firstPoint.color.hue) / 1
+        case "randomBetweenTheTwo":
+          return Math.random() <= 0.5
+            ? firstPoint.color.hue
+            : secondPoint.color.hue
+        default:
+          throw new Error("invalid coloringMode!")
+      }
+    }
+
+    return new Point(
+      newX,
+      newY,
+      new HslColor(
+        newHueBasedOnColoringMode(),
+        firstPoint.color.saturation,
+        firstPoint.color.lightness,
+        firstPoint.color.alpha
+      )
+    )
   }
 }
