@@ -8,5 +8,6 @@
 
 .canvas {
   display: block;
+  /*background value is for when browser don't show the canvas*/
   background-color: hsl(20, 80%, 2%);
 }
