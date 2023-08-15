@@ -22,11 +22,20 @@ you can edit ```config.js``` file to your liking
 ```backgroundColor```: This is the background color of the canvas.
 ### Polygon Configuration
 
-```sides```: This object contains the ```amount```, ```color```, and ```thickness``` of the polygon's sides.<br>
-```rotationAngle_radian```: This is the rotation angle of the polygon in radians. rotates the shape.<br>
+```sides```:
+- ```amount```: like ```5``` for pentagon, ```3``` for triangle (trigon)
+-  ```color```: color of the sides of polygon
+-   ```thickness``` : how thick the lines of polygon is.<br>
+```rotationAngle_radian```: This is the rotation angle of the polygon in radians. rotates the shape by an angle (radian) if you want degrees then use this formula: $(degree / 180) * \pi $.<br>
+```showPolygonPoints```: If set to ```true```, then shows side points of the polygon.<br>
 ```circleContainingPolygonPointsRadius```: This is the radius of the circle that contains the polygon's points. The larger the circle, the larger the sides of the polygon.<br>
 ### Points Configuration
 
 ```radius```: This is the radius of the points shown on canvas.<br>
-```fillColor```: This is the fill color of the points.<br>
-```strokeColor```: This is the stroke color of the points.<br>
+```color``` : here you can set color values and  coloring mode 
+- ```saturation``` (from ```0``` to ```100```)
+- ```lightness``` (from ```0``` to ```100```)
+- ```alpha``` (from ```0``` to ```1```)
+- ```hueOffset``` that adds to the points hue set by the app. <br>
+```coloringMode```
+
