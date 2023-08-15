@@ -6,7 +6,7 @@ const config = {
   polygon: {
     sides: {
       amount: 5,
-      color: "hsl(20,75%,60%,.2)",
+      color: "hsl(20,75%,60%,0)",
       thickness: 3
     },
     showPolygonPoints: false,
@@ -30,17 +30,23 @@ const config = {
       alpha: 1
     },
     // coloringMode values:
-    //   "takeAverage" | "secondPoint" |
-    //   "firstPoint"  | "addHues"  |
-    //   "randomBetweenTheTwo"
-    coloringMode: "takeAverage"
+    // see the options in `globals/coloringModes.js`
+    coloringMode: COLORING_MODES.COLOR_DIVERSITY_FACTOR_DEPENDANT,
+    /* if coloring mode is colorDiversityFactorDependant, then
+       app uses colorDiversityFactor [0 - 1] */
+    colorDiversityFactor: 0.6,
+    // colorDiversityModeOperation values:
+    // see the options in `globals/colorDiversityModeOperations.js`
+    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS.SUBTRACTION
   },
   // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume
-  iterationsPerFrame: 10,
+  iterationsPerFrame: 1000,
 
   // indicates That each update should occur on what frame
   //  (default : 1)
   // animation fps = your_fps / updateOnFrameIndex
+  // For more performance set `updateOnFrameIndex` higher
+
   updateOnFrameIndex: 2,
-  ratioFactor: 2 / 3
+  ratioFactor: 1 / 1.618
 }
