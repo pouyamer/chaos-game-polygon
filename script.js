@@ -1,3 +1,5 @@
+"use strict"
+
 // setting up the canvas
 const canvas = document.querySelector(".canvas")
 const ctx = canvas.getContext("2d")
@@ -6,10 +8,10 @@ const { size: canvasSize } = config.canvas
 canvas.height = canvasSize.height
 canvas.width = canvasSize.width
 
-const center = new Point(0, 0, "red")
-
 // drawing the polygon
 const { circleContainingPoligonPointsRadius } = config.polygon
+const { hueOffset, saturation, lightness, alpha } = config.points.color
+
 const polygonPoints = Array(config.polygon.sides.amount)
   .fill()
   .map(
@@ -26,50 +28,64 @@ const polygonPoints = Array(config.polygon.sides.amount)
               sideArray.length
           ),
         new HslColor(
-          (360 * i) / config.polygon.sides.amount + config.polygon.hueOffset,
-          70,
-          50,
-          1
-        ).toString()
+          (360 * i) / config.polygon.sides.amount + hueOffset,
+          saturation,
+          lightness,
+          alpha
+        )
       )
   )
+
+const center = new Point(0, 0, new HslColor(360, saturation, lightness, alpha))
 
 // drawing the innerPoints
 
 let currentPolygonPointIndex = Math.floor(
   Math.random() * config.polygon.sides.amount
 )
+
+console.log(config.points.coloringMode)
 let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   polygonPoints[currentPolygonPointIndex],
-  config.ratioFactor
+  config.ratioFactor,
+  true,
+  config.points.coloringMode
 )
 
+let frames = 1
+
 const drawTheChaosGame = () => {
-  for (let i = 0; i < config.iterationsPerFrame; i++) {
-    // get all unselected possible points on polygon
-    const polygonPointsExceptTheCurrentPoint = polygonPoints.filter(
-      (_, i) => i !== currentPolygonPointIndex
-    )
-
-    currentPolygonPointIndex =
-      polygonPointsExceptTheCurrentPoint[
-        Math.floor(Math.random() * polygonPointsExceptTheCurrentPoint.length)
-      ]
-
-    currentPoint =
-      currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
-        currentPolygonPointIndex,
-        config.ratioFactor
+  if (frames % config.updateOnFrameIndex === 0) {
+    for (let i = 0; i < config.iterationsPerFrame; i++) {
+      // get all unselected possible points on polygon
+      const polygonPointsExceptTheCurrentPoint = polygonPoints.filter(
+        (_, i) => i !== currentPolygonPointIndex
       )
 
-    currentPoint.draw(ctx)
+      currentPolygonPointIndex =
+        polygonPointsExceptTheCurrentPoint[
+          Math.floor(Math.random() * polygonPointsExceptTheCurrentPoint.length)
+        ]
+
+      currentPoint =
+        currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
+          currentPolygonPointIndex,
+          config.ratioFactor,
+          true,
+          config.points.coloringMode
+        )
+
+      currentPoint.draw(ctx)
+    }
   }
+  frames++
+  console.log(frames)
   requestAnimationFrame(drawTheChaosGame)
 }
 
 // App Starts here:
 ctx.fillStyle = config.canvas.backgroundColor
-ctx.fillRect(0, 0, canvas.height, canvas.width)
+ctx.fillRect(0, 0, canvas.width, canvas.height)
 
 //  drawing the polygon
 //          shape:
@@ -82,7 +98,7 @@ polygonPoints.forEach((point, i) => {
   )
 
   //         points:
-  config.polygon.showTrianglePoints &&
+  config.polygon.showPolygonPoints &&
     polygonPoints.forEach(point => point.draw(ctx))
 })
 currentPoint.draw(ctx)
