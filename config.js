@@ -15,7 +15,7 @@ const config = {
     // The wider the circle, bigger the sides
     circleContainingPoligonPointsRadius:
       (0.8 * Math.min(innerHeight, innerWidth)) / 2
-    // Hue Offset: hue that gets added to hue of polygon points and associated points
+    // Hue Offset: hue that gets added to hue of polygon points and its points
   },
   points: {
     radius: 3,
