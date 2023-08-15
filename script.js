@@ -44,12 +44,13 @@ let currentPolygonPointIndex = Math.floor(
   Math.random() * config.polygon.sides.amount
 )
 
-console.log(config.points.coloringMode)
 let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   polygonPoints[currentPolygonPointIndex],
   config.ratioFactor,
   true,
-  config.points.coloringMode
+  config.points.coloringMode,
+  config.points.colorDiversityFactor,
+  config.points.colorDiversityModeOperation
 )
 
 let frames = 1
@@ -72,14 +73,15 @@ const drawTheChaosGame = () => {
           currentPolygonPointIndex,
           config.ratioFactor,
           true,
-          config.points.coloringMode
+          config.points.coloringMode,
+          config.points.colorDiversityFactor,
+          config.points.colorDiversityModeOperation
         )
 
       currentPoint.draw(ctx)
     }
   }
   frames++
-  console.log(frames)
   requestAnimationFrame(drawTheChaosGame)
 }
 

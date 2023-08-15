@@ -24,17 +24,19 @@ class Point {
   }
   getNewPointFromFractionOfDistanceBetweenTwoPoints = (
     nextPoint,
-    fraction,
+    distanceRatioFactor,
     isCalculatedFromTheFirstPoint = true,
-    coloringMode
+    coloringMode,
+    colorDiversityFactor = 0.5,
+    colorDiversityModeOperation = "addition"
   ) => {
     const firstPoint = isCalculatedFromTheFirstPoint ? this : nextPoint
     const secondPoint = isCalculatedFromTheFirstPoint ? nextPoint : this
 
-    const newX = firstPoint.x + fraction * (secondPoint.x - firstPoint.x)
-    const newY = firstPoint.y + fraction * (secondPoint.y - firstPoint.y)
-
-    console.log(coloringMode)
+    const newX =
+      firstPoint.x + distanceRatioFactor * (secondPoint.x - firstPoint.x)
+    const newY =
+      firstPoint.y + distanceRatioFactor * (secondPoint.y - firstPoint.y)
 
     const newHueBasedOnColoringMode = () => {
       switch (coloringMode) {
@@ -50,6 +52,17 @@ class Point {
           return Math.random() <= 0.5
             ? firstPoint.color.hue
             : secondPoint.color.hue
+        case "ratioFactorDependant":
+          return (
+            (secondPoint.color.hue + firstPoint.color.hue) * distanceRatioFactor
+          )
+        case "colorDiversityFactorDependant":
+          return colorDiversityModeOperation === "addition"
+            ? (secondPoint.color.hue + firstPoint.color.hue) *
+                colorDiversityFactor
+            : (secondPoint.color.hue - firstPoint.color.hue) *
+                colorDiversityFactor
+
         default:
           throw new Error("invalid coloringMode!")
       }
