@@ -8,6 +8,13 @@ class Point {
 
     this.color = color
   }
+
+  equals = point => {
+    return (
+      this.x === point.x && this.y === point.y && this.color === point.color
+    )
+  }
+
   draw = (ctx, color = this.color) => {
     ctx.fillStyle = color.toString()
     ctx.beginPath()
@@ -25,43 +32,31 @@ class Point {
   getNewPointFromFractionOfDistanceBetweenTwoPoints = (
     nextPoint,
     distanceRatioFactor,
-    isCalculatedFromTheFirstPoint = true,
     coloringMode,
     colorDiversityFactor = 0.5,
     colorDiversityModeOperation = "addition"
   ) => {
-    const firstPoint = isCalculatedFromTheFirstPoint ? this : nextPoint
-    const secondPoint = isCalculatedFromTheFirstPoint ? nextPoint : this
-
-    const newX =
-      firstPoint.x + distanceRatioFactor * (secondPoint.x - firstPoint.x)
-    const newY =
-      firstPoint.y + distanceRatioFactor * (secondPoint.y - firstPoint.y)
+    const newX = this.x + distanceRatioFactor * (nextPoint.x - this.x)
+    const newY = this.y + distanceRatioFactor * (nextPoint.y - this.y)
 
     const newHueBasedOnColoringMode = () => {
       switch (coloringMode) {
         case "firstPoint":
-          return firstPoint.color.hue
+          return this.color.hue
         case "secondPoint":
-          return secondPoint.color.hue
+          return nextPoint.color.hue
         case "takeAverage":
-          return (secondPoint.color.hue + firstPoint.color.hue) / 2
+          return (nextPoint.color.hue + this.color.hue) / 2
         case "addHues":
-          return (secondPoint.color.hue + firstPoint.color.hue) / 1
+          return (nextPoint.color.hue + this.color.hue) / 1
         case "randomBetweenTheTwo":
-          return Math.random() <= 0.5
-            ? firstPoint.color.hue
-            : secondPoint.color.hue
+          return Math.random() <= 0.5 ? this.color.hue : nextPoint.color.hue
         case "ratioFactorDependant":
-          return (
-            (secondPoint.color.hue + firstPoint.color.hue) * distanceRatioFactor
-          )
+          return (nextPoint.color.hue + this.color.hue) * distanceRatioFactor
         case "colorDiversityFactorDependant":
           return colorDiversityModeOperation === "addition"
-            ? (secondPoint.color.hue + firstPoint.color.hue) *
-                colorDiversityFactor
-            : (secondPoint.color.hue - firstPoint.color.hue) *
-                colorDiversityFactor
+            ? (nextPoint.color.hue + this.color.hue) * colorDiversityFactor
+            : (nextPoint.color.hue - this.color.hue) * colorDiversityFactor
 
         default:
           throw new Error("invalid coloringMode!")
@@ -73,9 +68,9 @@ class Point {
       newY,
       new HslColor(
         newHueBasedOnColoringMode(),
-        firstPoint.color.saturation,
-        firstPoint.color.lightness,
-        firstPoint.color.alpha
+        this.color.saturation,
+        this.color.lightness,
+        this.color.alpha
       )
     )
   }
