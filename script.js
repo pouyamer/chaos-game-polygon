@@ -1,6 +1,6 @@
 "use strict"
-const { updateOnFrameIndex, iterationsPerFrame, ratioFactor } = config
-const { circumRadius } = config.polygon
+const { updateOnFrameIndex, iterationsPerFrame, ratioFactor } = config.general
+const { circumRadius, rotationAngle_radian } = config.polygon
 const { hueShift, saturation, lightness, alpha } = config.points.color
 const {
   selectionConstrains,
@@ -30,15 +30,9 @@ const polygonPoints = Array(polygonSideCount)
     (_, i, sideArray) =>
       new Point(
         circumRadius *
-          Math.cos(
-            (i * 2 * Math.PI + config.polygon.rotationAngle_radian) /
-              sideArray.length
-          ),
+          Math.cos((i * 2 * Math.PI + rotationAngle_radian) / sideArray.length),
         circumRadius *
-          Math.sin(
-            (i * 2 * Math.PI + config.polygon.rotationAngle_radian) /
-              sideArray.length
-          ),
+          Math.sin((i * 2 * Math.PI + rotationAngle_radian) / sideArray.length),
         new HslColor(
           (360 * i) / polygonSideCount + hueShift,
           saturation,
@@ -56,7 +50,7 @@ let currentPolygonPointIndex = Math.floor(Math.random() * polygonSideCount)
 
 let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   polygonPoints[currentPolygonPointIndex],
-  config.ratioFactor,
+  ratioFactor,
   coloringMode,
   colorDiversityFactor,
   colorDiversityModeOperation
