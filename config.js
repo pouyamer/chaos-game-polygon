@@ -5,26 +5,25 @@ const config = {
   },
   polygon: {
     sides: {
-      amount: 5,
+      count: 10,
       color: "hsl(20,75%,60%,0)",
       thickness: 3
     },
-    showPolygonPoints: false,
+    showCornerPoints: false,
 
     // shape rotates with rotationAngle_radian
-    rotationAngle_radian: Math.PI / 2,
+    rotationAngle_radian: (3 * Math.PI) / 2,
 
     /* a perfect polygon is drawn within a circle,
        The bigger the circle, bigger the sides */
-    circleContainingPoligonPointsRadius:
-      (0.8 * Math.min(innerHeight, innerWidth)) / 2
+    circumRadius: (0.9 * Math.min(innerHeight, innerWidth)) / 2
   },
   points: {
-    radius: 3,
+    radius: 1,
 
     color: {
-      // Hue Offset: hue that gets added to hue of polygon points and its points
-      hueOffset: 0,
+      // hue Shift: hue that gets added to hue of polygon points and its points
+      hueShift: 0,
 
       /* saturation and lightness of all points:
         [0 - 100] */
@@ -36,14 +35,17 @@ const config = {
     },
     /* coloringMode values:
        see the options in `globals/coloringModes.js` */
-    coloringMode: COLORING_MODES.COLOR_DIVERSITY_FACTOR_DEPENDANT,
+    coloringMode: COLORING_MODES.RATIO_FACTOR_DEPENDANT,
     /* if coloring mode is colorDiversityFactorDependant, then
        app uses colorDiversityFactor [0 - 1] */
     colorDiversityFactor: 0.6,
 
     /* colorDiversityModeOperation values:
        see the options in `globals/colorDiversityModeOperations.js`*/
-    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS.SUBTRACTION
+    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS.SUBTRACTION,
+    // there can be constrains on how the next points are selected
+    selectionConstrains:
+      SELECTION_CONSTRAINS.NOT_SELECT_TWO_POINTS_IN_SUCCESSION
   },
   // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume
   iterationsPerFrame: 1000,
@@ -54,8 +56,8 @@ const config = {
         your_fps / updateOnFrameIndex
      For more performance 
       set `updateOnFrameIndex` higher */
-  updateOnFrameIndex: 2,
+  updateOnFrameIndex: 1,
 
   // ratioFactor: the points will be set on <ratioFactor> of distance between two points
-  ratioFactor: 1 / 1.618
+  ratioFactor: 1 / 1.35
 }
