@@ -5,7 +5,7 @@ const config = {
   },
   polygon: {
     sides: {
-      count: 10,
+      count: 5,
       color: "hsl(20,75%,60%,0)",
       thickness: 3
     },
@@ -60,6 +60,6 @@ const config = {
     updateOnFrameIndex: 1,
 
     // ratioFactor: the points will be set on <ratioFactor> of distance between two points
-    ratioFactor: 1 / 1.35
+    ratioFactor: 1 / 1.7
   }
 }
