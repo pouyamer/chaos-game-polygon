@@ -1,4 +1,18 @@
 "use strict"
+const { updateOnFrameIndex, iterationsPerFrame, ratioFactor } = config
+const { circumRadius } = config.polygon
+const { hueShift, saturation, lightness, alpha } = config.points.color
+const {
+  selectionConstrains,
+  coloringMode,
+  colorDiversityFactor,
+  colorDiversityModeOperation
+} = config.points
+const {
+  count: polygonSideCount,
+  color: polygonColor,
+  thickness: polygonThickness
+} = config.polygon.sides
 
 // setting up the canvas
 const canvas = document.querySelector(".canvas")
@@ -9,26 +23,24 @@ canvas.height = canvasSize.height
 canvas.width = canvasSize.width
 
 // drawing the polygon
-const { circleContainingPoligonPointsRadius } = config.polygon
-const { hueOffset, saturation, lightness, alpha } = config.points.color
 
-const polygonPoints = Array(config.polygon.sides.amount)
+const polygonPoints = Array(polygonSideCount)
   .fill()
   .map(
     (_, i, sideArray) =>
       new Point(
-        circleContainingPoligonPointsRadius *
+        circumRadius *
           Math.cos(
             (i * 2 * Math.PI + config.polygon.rotationAngle_radian) /
               sideArray.length
           ),
-        circleContainingPoligonPointsRadius *
+        circumRadius *
           Math.sin(
             (i * 2 * Math.PI + config.polygon.rotationAngle_radian) /
               sideArray.length
           ),
         new HslColor(
-          (360 * i) / config.polygon.sides.amount + hueOffset,
+          (360 * i) / polygonSideCount + hueShift,
           saturation,
           lightness,
           alpha
@@ -40,45 +52,56 @@ const center = new Point(0, 0, new HslColor(360, saturation, lightness, alpha))
 
 // drawing the innerPoints
 
-let currentPolygonPointIndex = Math.floor(
-  Math.random() * config.polygon.sides.amount
-)
+let currentPolygonPointIndex = Math.floor(Math.random() * polygonSideCount)
 
 let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   polygonPoints[currentPolygonPointIndex],
   config.ratioFactor,
-  true,
-  config.points.coloringMode,
-  config.points.colorDiversityFactor,
-  config.points.colorDiversityModeOperation
+  coloringMode,
+  colorDiversityFactor,
+  colorDiversityModeOperation
+)
+
+const getSelectableNextPoints = (selectionConstrains, lastPointSelected) => {
+  switch (selectionConstrains) {
+    case "noConstrains":
+      return polygonPoints
+    case "notSelectTwoPointsInSuccession":
+      return polygonPoints.filter(point => !point.equals(lastPointSelected))
+    default:
+      throw new Error("error: Invalid selection constrain")
+  }
+}
+
+let possibleNextSelectablePoints = getSelectableNextPoints(
+  selectionConstrains,
+  polygonPoints[currentPolygonPointIndex]
 )
 
 let frames = 1
-
 const drawTheChaosGame = () => {
-  if (frames % config.updateOnFrameIndex === 0) {
-    for (let i = 0; i < config.iterationsPerFrame; i++) {
-      // get all unselected possible points on polygon
-      const polygonPointsExceptTheCurrentPoint = polygonPoints.filter(
-        (_, i) => i !== currentPolygonPointIndex
-      )
-
-      currentPolygonPointIndex =
-        polygonPointsExceptTheCurrentPoint[
-          Math.floor(Math.random() * polygonPointsExceptTheCurrentPoint.length)
+  if (frames % updateOnFrameIndex === 0) {
+    for (let i = 0; i < iterationsPerFrame; i++) {
+      const currentPolygonPoint =
+        possibleNextSelectablePoints[
+          Math.floor(Math.random() * possibleNextSelectablePoints.length)
         ]
 
       currentPoint =
         currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
-          currentPolygonPointIndex,
-          config.ratioFactor,
-          true,
-          config.points.coloringMode,
-          config.points.colorDiversityFactor,
-          config.points.colorDiversityModeOperation
+          currentPolygonPoint,
+          ratioFactor,
+          coloringMode,
+          colorDiversityFactor,
+          colorDiversityModeOperation
         )
 
       currentPoint.draw(ctx)
+
+      possibleNextSelectablePoints = getSelectableNextPoints(
+        selectionConstrains,
+        currentPolygonPoint
+      )
     }
   }
   frames++
@@ -95,12 +118,12 @@ polygonPoints.forEach((point, i) => {
   point.lineTo(
     ctx,
     polygonPoints[i === polygonPoints.length - 1 ? 0 : i + 1],
-    config.polygon.sides.color,
-    config.polygon.sides.thickness
+    polygonColor,
+    polygonThickness
   )
 
   //         points:
-  config.polygon.showPolygonPoints &&
+  config.polygon.showCornerPoints &&
     polygonPoints.forEach(point => point.draw(ctx))
 })
 currentPoint.draw(ctx)
