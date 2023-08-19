@@ -47,17 +47,19 @@ const config = {
     selectionConstrains:
       SELECTION_CONSTRAINS.NOT_SELECT_TWO_POINTS_IN_SUCCESSION
   },
-  // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume
-  iterationsPerFrame: 1000,
+  general: {
+    // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume
+    iterationsPerFrame: 1000,
 
-  /* indicates That each update should occur on what frame
+    /* indicates That each update should occur on what frame
      (default : 1)
      animation fps =
         your_fps / updateOnFrameIndex
      For more performance 
       set `updateOnFrameIndex` higher */
-  updateOnFrameIndex: 1,
+    updateOnFrameIndex: 1,
 
-  // ratioFactor: the points will be set on <ratioFactor> of distance between two points
-  ratioFactor: 1 / 1.35
+    // ratioFactor: the points will be set on <ratioFactor> of distance between two points
+    ratioFactor: 1 / 1.35
+  }
 }
