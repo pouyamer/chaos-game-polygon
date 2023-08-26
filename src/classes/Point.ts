@@ -1,5 +1,11 @@
-class Point {
-  constructor(x, y, color) {
+class Point implements IPoint {
+  x: number
+  y: number
+  cX: number
+  cY: number
+  color: HslColor
+
+  constructor(x: number, y: number, color: HslColor) {
     this.x = x
     this.y = y
     // canvas x and y:
@@ -9,30 +15,35 @@ class Point {
     this.color = color
   }
 
-  equals = point => {
+  equals = (point: Point) => {
     return (
       this.x === point.x && this.y === point.y && this.color === point.color
     )
   }
 
-  draw = (ctx, color = this.color) => {
+  draw = (ctx: CanvasRenderingContext2D, color = this.color) => {
     ctx.fillStyle = color.toString()
     ctx.beginPath()
     ctx.arc(this.cX, this.cY, config.points.radius, 0, 2 * Math.PI)
     ctx.fill()
   }
-  lineTo = (ctx, nextPoint, strokeColor, lineWidth = 1) => {
+  lineTo = (
+    ctx: CanvasRenderingContext2D,
+    nextPoint: Point,
+    strokeColor: string,
+    lineWidth = 1
+  ) => {
     ctx.lineWidth = lineWidth
-    ctx.strokeStyle = strokeColor
+    ctx.strokeStyle = strokeColor.toString()
     ctx.beginPath()
     ctx.moveTo(this.cX, this.cY)
     ctx.lineTo(nextPoint.cX, nextPoint.cY)
     ctx.stroke()
   }
   getNewPointFromFractionOfDistanceBetweenTwoPoints = (
-    nextPoint,
-    distanceRatioFactor,
-    coloringMode,
+    nextPoint: Point,
+    distanceRatioFactor: number,
+    coloringMode: string,
     colorDiversityFactor = 0.5,
     colorDiversityModeOperation = "addition"
   ) => {

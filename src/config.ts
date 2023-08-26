@@ -46,6 +46,10 @@ const config = {
     // there can be constrains on how the next points are selected
     selectionConstrains:
       SELECTION_CONSTRAINS.NOT_SELECT_TWO_POINTS_IN_SUCCESSION
+
+    // first points seem out of order
+    // so you can hide them
+    // (center excluded)
   },
   general: {
     // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume

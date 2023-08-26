@@ -1,5 +1,10 @@
-class HslColor {
-  constructor(hue, saturation, lightness, alpha = 1) {
+class HslColor implements IHslColor {
+  hue: number
+  saturation: number
+  lightness: number
+  alpha: number
+
+  constructor(hue: number, saturation: number, lightness: number, alpha = 1) {
     this.hue = hue
     this.saturation = saturation
     this.lightness = lightness

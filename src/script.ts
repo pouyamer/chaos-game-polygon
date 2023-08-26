@@ -15,8 +15,8 @@ const {
 } = config.polygon.sides
 
 // setting up the canvas
-const canvas = document.querySelector(".canvas")
-const ctx = canvas.getContext("2d")
+const canvas = document.querySelector(".canvas") as HTMLCanvasElement
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 const { size: canvasSize } = config.canvas
 
 canvas.height = canvasSize.height
@@ -25,7 +25,7 @@ canvas.width = canvasSize.width
 // drawing the polygon
 
 const polygonPoints = Array(polygonSideCount)
-  .fill()
+  .fill(2)
   .map(
     (_, i, sideArray) =>
       new Point(
@@ -56,7 +56,10 @@ let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   colorDiversityModeOperation
 )
 
-const getSelectableNextPoints = (selectionConstrains, lastPointSelected) => {
+const getSelectableNextPoints = (
+  selectionConstrains: string,
+  lastPointSelected: Point
+) => {
   switch (selectionConstrains) {
     case "noConstrains":
       return polygonPoints
@@ -72,34 +75,37 @@ let possibleNextSelectablePoints = getSelectableNextPoints(
   polygonPoints[currentPolygonPointIndex]
 )
 
-let frames = 1
-const drawTheChaosGame = () => {
-  if (frames % updateOnFrameIndex === 0) {
+const drawNextPoint = () => {
+  const currentPolygonPoint =
+    possibleNextSelectablePoints[
+      Math.floor(Math.random() * possibleNextSelectablePoints.length)
+    ]
+
+  currentPoint = currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
+    currentPolygonPoint,
+    ratioFactor,
+    coloringMode,
+    colorDiversityFactor,
+    colorDiversityModeOperation
+  )
+
+  currentPoint.draw(ctx)
+
+  possibleNextSelectablePoints = getSelectableNextPoints(
+    selectionConstrains,
+    currentPolygonPoint
+  )
+}
+
+let framesPassed = 1
+const animate = () => {
+  if (framesPassed % updateOnFrameIndex === 0) {
     for (let i = 0; i < iterationsPerFrame; i++) {
-      const currentPolygonPoint =
-        possibleNextSelectablePoints[
-          Math.floor(Math.random() * possibleNextSelectablePoints.length)
-        ]
-
-      currentPoint =
-        currentPoint.getNewPointFromFractionOfDistanceBetweenTwoPoints(
-          currentPolygonPoint,
-          ratioFactor,
-          coloringMode,
-          colorDiversityFactor,
-          colorDiversityModeOperation
-        )
-
-      currentPoint.draw(ctx)
-
-      possibleNextSelectablePoints = getSelectableNextPoints(
-        selectionConstrains,
-        currentPolygonPoint
-      )
+      drawNextPoint()
     }
   }
-  frames++
-  requestAnimationFrame(drawTheChaosGame)
+  framesPassed++
+  requestAnimationFrame(animate)
 }
 
 // App Starts here:
@@ -121,4 +127,5 @@ polygonPoints.forEach((point, i) => {
     polygonPoints.forEach(point => point.draw(ctx))
 })
 currentPoint.draw(ctx)
-drawTheChaosGame()
+
+animate()
