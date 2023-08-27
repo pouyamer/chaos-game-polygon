@@ -11,12 +11,12 @@ class RgbColor implements IRgbColor {
   }
 
   toHsl = () => {
-    const redRatio = (this.red /= 255)
-    const greenRatio = (this.green /= 255)
-    const blueRatio = (this.blue /= 255)
+    const redRatio = this.red / 255
+    const greenRatio = this.green / 255
+    const blueRatio = this.blue / 255
 
-    let max = Math.max(redRatio, greenRatio, blueRatio),
-      min = Math.min(redRatio, greenRatio, blueRatio)
+    let max = Math.max(redRatio, greenRatio, blueRatio)
+    let min = Math.min(redRatio, greenRatio, blueRatio)
     let hue,
       saturation,
       lightness = (max + min) / 2
@@ -26,6 +26,7 @@ class RgbColor implements IRgbColor {
       saturation = 0 // achromatic
     } else {
       let delta = max - min
+
       saturation =
         lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min)
 
@@ -41,14 +42,14 @@ class RgbColor implements IRgbColor {
           hue = (redRatio - greenRatio) / delta + 4
           break
         default:
-          throw new Error()
+          throw new Error("Invalid color")
       }
 
       hue /= 6
     }
 
     return new HslColor(
-      hue * 355,
+      hue * 360,
       saturation * 100,
       lightness * 100,
       this.alpha
