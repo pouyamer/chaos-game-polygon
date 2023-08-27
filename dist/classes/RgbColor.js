@@ -2,10 +2,11 @@
 class RgbColor {
     constructor(red, green, blue, alpha = 1) {
         this.toHsl = () => {
-            const redRatio = (this.red /= 255);
-            const greenRatio = (this.green /= 255);
-            const blueRatio = (this.blue /= 255);
-            let max = Math.max(redRatio, greenRatio, blueRatio), min = Math.min(redRatio, greenRatio, blueRatio);
+            const redRatio = this.red / 255;
+            const greenRatio = this.green / 255;
+            const blueRatio = this.blue / 255;
+            let max = Math.max(redRatio, greenRatio, blueRatio);
+            let min = Math.min(redRatio, greenRatio, blueRatio);
             let hue, saturation, lightness = (max + min) / 2;
             if (max === min) {
                 hue = 0;
@@ -27,11 +28,11 @@ class RgbColor {
                         hue = (redRatio - greenRatio) / delta + 4;
                         break;
                     default:
-                        throw new Error();
+                        throw new Error("Invalid color");
                 }
                 hue /= 6;
             }
-            return new HslColor(hue * 355, saturation * 100, lightness * 100, this.alpha);
+            return new HslColor(hue * 360, saturation * 100, lightness * 100, this.alpha);
         };
         this.toString = () => `rgb(${this.red},${this.green},${this.blue},${this.alpha})`;
         this.red = red;
