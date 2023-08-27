@@ -13,8 +13,9 @@ interface IPoint {
   getNewPointFromFractionOfDistanceBetweenTwoPoints: (
     nextPoint: Point,
     distanceRatioFactor: number,
-    coloringMode: string,
+    coloringMode: COLORING_MODES,
     colorDiversityFactor: number,
-    colorDiversityModeOperation: string
+    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS,
+    lastCornerPoint: Point
   ) => Point
 }
