@@ -43,46 +43,120 @@ class Point implements IPoint {
   getNewPointFromFractionOfDistanceBetweenTwoPoints = (
     nextPoint: Point,
     distanceRatioFactor: number,
-    coloringMode: string,
+    coloringMode: COLORING_MODES,
     colorDiversityFactor = 0.5,
-    colorDiversityModeOperation = "addition"
+    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS = "addition",
+    lastCornerPoint: Point
   ) => {
     const newX = this.x + distanceRatioFactor * (nextPoint.x - this.x)
     const newY = this.y + distanceRatioFactor * (nextPoint.y - this.y)
 
-    const newHueBasedOnColoringMode = () => {
+    const newColorBasedOnColoringMode = () => {
       switch (coloringMode) {
         case "firstPoint":
-          return this.color.hue
+          return new HslColor(
+            this.color.hue,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
         case "secondPoint":
-          return nextPoint.color.hue
+          return new HslColor(
+            nextPoint.color.hue,
+            nextPoint.color.saturation,
+            nextPoint.color.lightness,
+            nextPoint.color.alpha
+          )
+        case "lastCornerPoint":
+          return new HslColor(
+            lastCornerPoint.color.hue,
+            lastCornerPoint.color.saturation,
+            lastCornerPoint.color.lightness,
+            lastCornerPoint.color.alpha
+          )
         case "takeAverage":
-          return (nextPoint.color.hue + this.color.hue) / 2
+        case "colorsAssigned":
+          return new HslColor(
+            (nextPoint.color.hue + this.color.hue) / 2,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
         case "addHues":
-          return (nextPoint.color.hue + this.color.hue) / 1
+          return new HslColor(
+            (nextPoint.color.hue + this.color.hue) / 2,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
         case "randomBetweenTheTwo":
-          return Math.random() <= 0.5 ? this.color.hue : nextPoint.color.hue
+          return new HslColor(
+            Math.random() <= 0.5 ? this.color.hue : nextPoint.color.hue,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
         case "ratioFactorDependant":
-          return (nextPoint.color.hue + this.color.hue) * distanceRatioFactor
+          return new HslColor(
+            (nextPoint.color.hue + this.color.hue) * distanceRatioFactor,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
+
         case "colorDiversityFactorDependant":
-          return colorDiversityModeOperation === "addition"
-            ? (nextPoint.color.hue + this.color.hue) * colorDiversityFactor
-            : (nextPoint.color.hue - this.color.hue) * colorDiversityFactor
+          return new HslColor(
+            colorDiversityModeOperation === "addition"
+              ? (nextPoint.color.hue + this.color.hue) * colorDiversityFactor
+              : (nextPoint.color.hue - this.color.hue) * colorDiversityFactor,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
+
+        case "yAxisBased":
+          return new HslColor(
+            (newY * 360) / canvas.height,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
+        case "xAxisBased":
+          return new HslColor(
+            (newX * 360) / canvas.width,
+            this.color.saturation,
+            this.color.lightness,
+            this.color.alpha
+          )
+        case "rgbDistribution":
+          const {
+            red: thisRed,
+            green: thisGreen,
+            blue: thisBlue
+          } = this.color.toRgb()
+          const {
+            red: nextRed,
+            green: nextGreen,
+            blue: nextBlue
+          } = nextPoint.color.toRgb()
+          const {
+            red: lastRed,
+            green: lastGreen,
+            blue: lastBlue
+          } = lastCornerPoint.color.toRgb()
+
+          return new RgbColor(
+            Math.min((thisRed + lastRed) * distanceRatioFactor, 255),
+            Math.min((thisGreen + lastGreen) * distanceRatioFactor, 255),
+            Math.min((thisBlue + lastBlue) * distanceRatioFactor, 255),
+            this.color.alpha
+          ).toHsl()
 
         default:
           throw new Error("invalid coloringMode!")
       }
     }
 
-    return new Point(
-      newX,
-      newY,
-      new HslColor(
-        newHueBasedOnColoringMode(),
-        this.color.saturation,
-        this.color.lightness,
-        this.color.alpha
-      )
-    )
+    return new Point(newX, newY, newColorBasedOnColoringMode())
   }
 }
