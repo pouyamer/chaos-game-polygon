@@ -6,7 +6,8 @@ const {
   selectionConstrains,
   coloringMode,
   colorDiversityFactor,
-  colorDiversityModeOperation
+  colorDiversityModeOperation,
+  colorsArray
 } = config.points
 const {
   count: polygonSideCount,
@@ -24,6 +25,49 @@ canvas.width = canvasSize.width
 
 // drawing the polygon
 
+const decidePolymerCornersColor = (coloringMode: COLORING_MODES) => {
+  let cornerColors: HslColor[]
+  switch (coloringMode) {
+    case "colorsAssigned":
+      cornerColors = []
+      for (let i = 0; i < polygonSideCount; i++) {
+        cornerColors.push(colorsArray[i % colorsArray.length])
+      }
+      return cornerColors
+
+    case "rgbDistribution":
+      const rgbCornerColors = [
+        new RgbColor(255, 0, 0).toHsl(),
+        new RgbColor(0, 255, 0).toHsl(),
+        new RgbColor(0, 0, 255).toHsl(),
+        new RgbColor(255, 255, 0).toHsl(),
+        new RgbColor(255, 0, 255).toHsl(),
+        new RgbColor(0, 255, 255).toHsl(),
+        new RgbColor(255, 255, 255).toHsl()
+      ]
+
+      cornerColors = []
+
+      for (let i = 0; i < polygonSideCount; i++) {
+        cornerColors.push(rgbCornerColors[i % rgbCornerColors.length])
+      }
+
+      return cornerColors
+
+    default:
+      return Array(polygonSideCount)
+        .fill(2)
+        .map((_, i) => {
+          return new HslColor(
+            (360 * i) / polygonSideCount + hueShift,
+            saturation,
+            lightness,
+            alpha
+          )
+        })
+  }
+}
+
 const polygonPoints = Array(polygonSideCount)
   .fill(2)
   .map(
@@ -33,12 +77,7 @@ const polygonPoints = Array(polygonSideCount)
           Math.cos((i * 2 * Math.PI + rotationAngle_radian) / sideArray.length),
         circumRadius *
           Math.sin((i * 2 * Math.PI + rotationAngle_radian) / sideArray.length),
-        new HslColor(
-          (360 * i) / polygonSideCount + hueShift,
-          saturation,
-          lightness,
-          alpha
-        )
+        decidePolymerCornersColor(coloringMode)[i]
       )
   )
 
@@ -53,7 +92,8 @@ let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
   ratioFactor,
   coloringMode,
   colorDiversityFactor,
-  colorDiversityModeOperation
+  colorDiversityModeOperation,
+  center
 )
 
 const getSelectableNextPoints = (
@@ -75,6 +115,8 @@ let possibleNextSelectablePoints = getSelectableNextPoints(
   polygonPoints[currentPolygonPointIndex]
 )
 
+let lastCornerPoint = currentPoint
+
 const drawNextPoint = () => {
   const currentPolygonPoint =
     possibleNextSelectablePoints[
@@ -86,8 +128,11 @@ const drawNextPoint = () => {
     ratioFactor,
     coloringMode,
     colorDiversityFactor,
-    colorDiversityModeOperation
+    colorDiversityModeOperation,
+    lastCornerPoint
   )
+
+  lastCornerPoint = currentPolygonPoint
 
   currentPoint.draw(ctx)
 
