@@ -1,11 +1,11 @@
-const config = {
+const config: IConfig = {
   canvas: {
     size: { width: innerWidth, height: innerHeight },
     backgroundColor: "#111"
   },
   polygon: {
     sides: {
-      count: 5,
+      count: 3,
       color: "hsl(20,75%,60%,0)",
       thickness: 3
     },
@@ -16,10 +16,10 @@ const config = {
 
     /* a perfect polygon is drawn within a circle,
        The bigger the circle, bigger the sides */
-    circumRadius: (0.9 * Math.min(innerHeight, innerWidth)) / 2
+    circumRadius: (1 * Math.min(innerHeight, innerWidth)) / 2
   },
   points: {
-    radius: 1,
+    radius: 2,
 
     color: {
       // hue Shift: hue that gets added to hue of polygon points and its points
@@ -35,17 +35,21 @@ const config = {
     },
     /* coloringMode values:
        see the options in `globals/coloringModes.js` */
-    coloringMode: COLORING_MODES.RATIO_FACTOR_DEPENDANT,
+    coloringMode: "ratioFactorDependant",
     /* if coloring mode is colorDiversityFactorDependant, then
        app uses colorDiversityFactor [0 - 1] */
     colorDiversityFactor: 0.6,
 
     /* colorDiversityModeOperation values:
        see the options in `globals/colorDiversityModeOperations.js`*/
-    colorDiversityModeOperation: COLOR_DIVERSITY_MODE_OPERATIONS.SUBTRACTION,
+    colorDiversityModeOperation: "addition",
     // there can be constrains on how the next points are selected
-    selectionConstrains:
-      SELECTION_CONSTRAINS.NOT_SELECT_TWO_POINTS_IN_SUCCESSION
+    selectionConstrains: "notSelectTwoPointsInSuccession",
+    colorsArray: [
+      new RgbColor(255, 0, 0).toHsl(),
+      new RgbColor(0, 255, 0).toHsl(),
+      new RgbColor(0, 0, 255).toHsl()
+    ]
 
     // first points seem out of order
     // so you can hide them
@@ -64,6 +68,6 @@ const config = {
     updateOnFrameIndex: 1,
 
     // ratioFactor: the points will be set on <ratioFactor> of distance between two points
-    ratioFactor: 1 / 1.7
+    ratioFactor: 0.39
   }
 }

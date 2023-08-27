@@ -1,0 +1,13 @@
+type COLORING_MODES =
+  | "takeAverage"
+  | "secondPoint"
+  | "firstPoint"
+  | "lastCornerPoint"
+  | "addHues"
+  | "randomBetweenTheTwo"
+  | "ratioFactorDependant"
+  | "colorDiversityFactorDependant"
+  | "yAxisBased"
+  | "xAxisBased"
+  | "colorsAssigned"
+  | "rgbDistribution"
