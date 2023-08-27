@@ -4,4 +4,5 @@ interface IHslColor {
   lightness: number
   alpha: number
   toString: () => string
+  toRgb: () => RgbColor
 }
