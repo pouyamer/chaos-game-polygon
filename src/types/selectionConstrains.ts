@@ -1,1 +1,5 @@
-type SELECTION_CONSTRAINS = "noConstrains" | "notSelectTwoPointsInSuccession"
+type SELECTION_CONSTRAINS =
+  | "noConstrains"
+  | "notSelectTwoPointsInSuccession"
+  | "notSelectLastPointAndPointBefore"
+  | "selectCornerTwoStepsAwayAfterRepeat"

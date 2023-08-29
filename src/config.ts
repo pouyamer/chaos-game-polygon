@@ -5,21 +5,21 @@ const config: IConfig = {
   },
   polygon: {
     sides: {
-      count: 3,
+      count: 5,
       color: "hsl(20,75%,60%,0)",
       thickness: 3
     },
     showCornerPoints: false,
 
     // shape rotates with rotationAngle_radian
-    rotationAngle_radian: (3 * Math.PI) / 2,
+    rotationAngle_radian: Math.PI / 2,
 
     /* a perfect polygon is drawn within a circle,
        The bigger the circle, bigger the sides */
     circumRadius: (1 * Math.min(innerHeight, innerWidth)) / 2
   },
   points: {
-    radius: 2,
+    radius: 1,
 
     color: {
       // hue Shift: hue that gets added to hue of polygon points and its points
@@ -35,7 +35,7 @@ const config: IConfig = {
     },
     /* coloringMode values:
        see the options in `globals/coloringModes.js` */
-    coloringMode: "ratioFactorDependant",
+    coloringMode: "colorDiversityFactorDependant",
     /* if coloring mode is colorDiversityFactorDependant, then
        app uses colorDiversityFactor [0 - 1] */
     colorDiversityFactor: 0.6,
@@ -44,7 +44,7 @@ const config: IConfig = {
        see the options in `globals/colorDiversityModeOperations.js`*/
     colorDiversityModeOperation: "addition",
     // there can be constrains on how the next points are selected
-    selectionConstrains: "notSelectTwoPointsInSuccession",
+    selectionConstrains: "selectCornerTwoStepsAwayAfterRepeat",
     colorsArray: [
       new RgbColor(255, 0, 0).toHsl(),
       new RgbColor(0, 255, 0).toHsl(),
@@ -57,7 +57,7 @@ const config: IConfig = {
   },
   general: {
     // WARNING : the higher `iterationsPerFrame` goes, more resourses it'll consume
-    iterationsPerFrame: 1000,
+    iterationsPerFrame: 1009,
 
     /* indicates That each update should occur on what frame
      (default : 1)
@@ -68,6 +68,6 @@ const config: IConfig = {
     updateOnFrameIndex: 1,
 
     // ratioFactor: the points will be set on <ratioFactor> of distance between two points
-    ratioFactor: 0.39
+    ratioFactor: 0.52
   }
 }

@@ -97,14 +97,32 @@ let currentPoint = center.getNewPointFromFractionOfDistanceBetweenTwoPoints(
 )
 
 const getSelectableNextPoints = (
-  selectionConstrains: string,
-  lastPointSelected: Point
+  selectionConstrains: SELECTION_CONSTRAINS,
+  lastPointSelected: Point,
+  lastSecondPointSelected: Point
 ) => {
   switch (selectionConstrains) {
     case "noConstrains":
       return polygonPoints
     case "notSelectTwoPointsInSuccession":
       return polygonPoints.filter(point => !point.equals(lastPointSelected))
+    case "notSelectLastPointAndPointBefore":
+      return polygonPoints.filter(
+        point =>
+          !point.equals(lastPointSelected) &&
+          !point.equals(lastSecondPointSelected)
+      )
+    case "selectCornerTwoStepsAwayAfterRepeat":
+      return polygonPoints.filter(point => {
+        if (point.equals(lastPointSelected)) {
+          const indexPointSelected = polygonPoints.indexOf(point)
+          const indexLastPointSelected =
+            polygonPoints.indexOf(lastPointSelected)
+          const distance = Math.abs(indexPointSelected - indexLastPointSelected)
+          return distance >= 2
+        }
+        return true
+      })
     default:
       throw new Error("error: Invalid selection constrain")
   }
@@ -112,9 +130,11 @@ const getSelectableNextPoints = (
 
 let possibleNextSelectablePoints = getSelectableNextPoints(
   selectionConstrains,
-  polygonPoints[currentPolygonPointIndex]
+  polygonPoints[currentPolygonPointIndex],
+  new Point(0, 1, new HslColor(0, 0, 0, 0))
 )
 
+let lastSecondPointSelected = center
 let lastCornerPoint = currentPoint
 
 const drawNextPoint = () => {
@@ -132,13 +152,15 @@ const drawNextPoint = () => {
     lastCornerPoint
   )
 
+  lastSecondPointSelected = lastCornerPoint
   lastCornerPoint = currentPolygonPoint
 
   currentPoint.draw(ctx)
 
   possibleNextSelectablePoints = getSelectableNextPoints(
     selectionConstrains,
-    currentPolygonPoint
+    currentPolygonPoint,
+    lastSecondPointSelected
   )
 }
 
