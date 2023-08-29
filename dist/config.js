@@ -6,26 +6,26 @@ const config = {
     },
     polygon: {
         sides: {
-            count: 3,
+            count: 5,
             color: "hsl(20,75%,60%,0)",
             thickness: 3
         },
         showCornerPoints: false,
-        rotationAngle_radian: (3 * Math.PI) / 2,
+        rotationAngle_radian: Math.PI / 2,
         circumRadius: (1 * Math.min(innerHeight, innerWidth)) / 2
     },
     points: {
-        radius: 2,
+        radius: 1,
         color: {
             hueShift: 0,
             saturation: 85,
             lightness: 65,
             alpha: 1
         },
-        coloringMode: "ratioFactorDependant",
+        coloringMode: "colorDiversityFactorDependant",
         colorDiversityFactor: 0.6,
         colorDiversityModeOperation: "addition",
-        selectionConstrains: "notSelectTwoPointsInSuccession",
+        selectionConstrains: "selectCornerTwoStepsAwayAfterRepeat",
         colorsArray: [
             new RgbColor(255, 0, 0).toHsl(),
             new RgbColor(0, 255, 0).toHsl(),
@@ -33,8 +33,8 @@ const config = {
         ]
     },
     general: {
-        iterationsPerFrame: 1000,
+        iterationsPerFrame: 1009,
         updateOnFrameIndex: 1,
-        ratioFactor: 0.39
+        ratioFactor: 0.52
     }
 };
